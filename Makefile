@@ -6,8 +6,13 @@ CFLAGS = -Wall -Wextra -Werror -g
 
 INCLUDES = -I/usr/include -Imlx
 
+GREEN = \033[1;32m
+BLUE= \033[1;34m
+RED = \033[1;31m
+NC = \033[0m
+
 LIBFT_PATH = ./libft
-LIBFT = $(LIBFT_PATH)libft.a
+LIBFT = $(LIBFT_PATH)/libft.a
 
 MLX_FLAGS = -Lmlx -lmlx -L/usr/lib/X11 -lXext -lX11 ./libft/libft.a
 
@@ -24,26 +29,35 @@ all : $(NAME)
 $(OBJ_DIR)%.o: $(FILE_DIR)%.c
 	@mkdir -p $(OBJ_DIR)
 	@$(CC) $(CFLAGS) -c -o $@ $< $(INCLUDES)
+	@echo "$@ : $(GREEN)[OK]$(NC)"
 
 $(NAME): $(LIBFT) $(OBJS)
 	@$(CC) $(CFLAGS)  $(OBJS) $(MLX_FLAGS) -o $(NAME)
+	@echo "\n$(BLUE)=============================================$(NC)\n"
 	
 $(LIBFT):
-	@make -C ./libft all
+	@make -C $(LIBFT_PATH) all
+	@clear
+	@echo "\n$(BLUE)================= [ START ] =================$(NC)\n"
+	@echo "libft : $(GREEN)[OK]$(NC)"
 	
-
 clean :
+	@make clean -C ./libft
+	@clear
+	@echo "$(RED)========== [ OBJECT DELETED ] ==========$(NC)"
 	rm -rf $(OBJ_DIR)
-	make -C ./libft clean
-
+	@echo "clean -C ./libft"
+	@echo "$(RED)========================================$(NC)"
+	
 fclean : clean
-	rm -f $(NAME)
-	make -C ./libft fclean
+	@make fclean -C ./libft
+	@clear
+	@echo "$(RED)========== [ OBJECT / EX DELETED ] ==========$(NC)"
+	rm -f $(NAME) 
+	@echo "fclean -C ./libft"
+	@echo "$(RED)=============================================$(NC)"
 
 re : fclean all
-	make -C ./libft re
-	make
-	
 
 .PHONY : all clean fclean re
 
